@@ -46,14 +46,15 @@ def parse_config(config: configparser.ConfigParser) -> List[dict]:
     return emitters
 
 
-def emit(emitters: List[Any], tilt_data: dict) -> None:
+def emit(emitters: List[Any], tilt_data: List[dict]) -> None:
     """ Find and call emitters from config
 
     Args:
         general_config (dict): general section from the configuration file
                                loaded from disk
         emitters (obj[]): dynamically loaded emitters from parse_config()
-        tilt_data (dict): data returned from valid tilt device scan
+        tilt_data (dict[]): data returned from valid tilt device scan
     """
     for emitter in emitters:
-        emitter.emit(tilt_data=tilt_data)
+        for tilt_datum in tilt_data:
+            emitter.emit(tilt_data=tilt_datum)

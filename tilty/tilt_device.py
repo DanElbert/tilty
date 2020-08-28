@@ -2,6 +2,7 @@
 """ Class to represent the actual device """
 
 from datetime import datetime
+from typing import List
 
 import bluetooth._bluetooth as bluez
 
@@ -38,14 +39,14 @@ class TiltDevice:  # pylint: disable=too-few-public-methods
         LOGGER.debug('Stopping device socket')
         blescan.hci_disable_le_scan(self.sock)
 
-    def scan_for_tilt_data(self) -> dict:
+    def scan_for_tilt_data(self) -> List[dict]:
         """ scan for tilt and return data if found """
 
         data = {}
         LOGGER.debug('Looking for events')
         for beacon in blescan.get_events(self.sock):
             if beacon['uuid'] in constants.TILT_DEVICES:
-                data = {
+                data[beacon['uuid']] = {
                     'color': constants.TILT_DEVICES[beacon['uuid']],
                     'gravity': float(beacon['minor']/1000),
                     'temp': beacon['major'],
@@ -58,4 +59,4 @@ class TiltDevice:  # pylint: disable=too-few-public-methods
                     beacon['uuid']
                 )
 
-        return data
+        return list(data.values())

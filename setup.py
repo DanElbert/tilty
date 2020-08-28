@@ -28,6 +28,7 @@ setup(
         'google-auth-httplib2',
         'google-auth-oauthlib',
         'oauth2client',
+        'paho-mqtt'
     ],
     entry_points={
         'console_scripts': [

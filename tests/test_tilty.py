@@ -53,17 +53,25 @@ def test_scan_for_tilt_data_parse_sqlite(
     emitter = sqlite.SQLite(config=config)
     tilty.emit(
         emitters=[emitter],
-        tilt_data={
+        tilt_data=[{
             'color': 'black',
             'gravity': 1,
             'temp': 32,
             'mac': '00:0a:95:9d:68:16',
-        }
+        },
+        {
+            'color': 'pink',
+            'gravity': 1,
+            'temp': 33,
+            'mac': '00:0a:95:9d:68:17',
+        }]
     )
     assert mock_sqlite.mock_calls == [
         mock.call.connect('/foo.sqlite'),
         mock.call.connect().execute('\n            CREATE TABLE IF NOT EXISTS data(\n              id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n              gravity INTEGER,\n              temp INTEGER,\n              color VARCHAR(16),\n              mac VARCHAR(17),\n              timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)\n        '),  # noqa
         mock.call.connect().execute('insert into data (gravity,temp,color,mac) values (?,?,?,?)', (1, 32, 'black', '00:0a:95:9d:68:16')),  # noqa
+        mock.call.connect().commit(),
+        mock.call.connect().execute('insert into data (gravity,temp,color,mac) values (?,?,?,?)', (1, 33, 'pink', '00:0a:95:9d:68:17')),  # noqa
         mock.call.connect().commit()
     ]
 
@@ -76,13 +84,13 @@ def test_scan_for_tilt_data_parse_webhook(
     emitter = webhook.Webhook(config=config)
     tilty.emit(
         emitters=[emitter],
-        tilt_data={
+        tilt_data=[{
             'color': 'black',
             'gravity': 1,
             'temp': 32,
             'mac': '00:0a:95:9d:68:16',
             'timestamp': 155558888
-        }
+        }]
     )
     assert mock_webhook.mock_calls == [
         mock.call(config={
@@ -109,13 +117,13 @@ def test_scan_for_tilt_data_parse_webhook_with_mac(
     emitter = webhook.Webhook(config=config)
     tilty.emit(
         emitters=[emitter],
-        tilt_data={
+        tilt_data=[{
             'color': 'black',
             'gravity': 1,
             'temp': 32,
             'mac': '00:0a:95:9d:68:16',
             'timestamp': 155558888
-        }
+        }]
     )
     assert mock_webhook.mock_calls == [
         mock.call(config={
@@ -141,13 +149,13 @@ def test_scan_for_tilt_data_parse_influxdb(
     emitter = influxdb.InfluxDB(config=config)
     tilty.emit(
         emitters=[emitter],
-        tilt_data={
+        tilt_data=[{
             'color': 'black',
             'gravity': 1,
             'temp': 32,
             'mac': '00:0a:95:9d:68:16',
             'timestamp': 155558888
-        }
+        }]
     )
     assert mock_influxdb.mock_calls == [
         mock.call(config={
@@ -174,13 +182,13 @@ def test_scan_for_tilt_data_parse_influxdb_with_mac(
     emitter = influxdb.InfluxDB(config=config)
     tilty.emit(
         emitters=[emitter],
-        tilt_data={
+        tilt_data=[{
             'color': 'black',
             'gravity': 1,
             'temp': 32,
             'mac': '00:0a:95:9d:68:16',
             'timestamp': 155558888
-        }
+        }]
     )
     assert mock_influxdb.mock_calls == [
         mock.call(config={
@@ -207,13 +215,13 @@ def test_scan_for_tilt_data_parse_datadog(
     emitter = datadog.Datadog(config=config)
     tilty.emit(
         emitters=[emitter],
-        tilt_data={
+        tilt_data=[{
             'color': 'black',
             'gravity': 1,
             'temp': 32,
             'mac': '00:0a:95:9d:68:16',
             'timestamp': 155558888
-        }
+        }]
     )
     assert mock_dd.mock_calls == [
         mock.call(config={

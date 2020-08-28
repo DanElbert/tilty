@@ -46,9 +46,10 @@ def scan_and_emit(device: tilt_device.TiltDevice, emitters: List[dict]):
     """
     LOGGER.debug('Starting device scan')
     tilt_data = device.scan_for_tilt_data()
-    if tilt_data:
+    if len(tilt_data) > 0:
         LOGGER.debug('tilt data retrieved')
-        click.echo(tilt_data)
+        for datum in tilt_data:
+            click.echo(datum)
         emit(emitters=emitters, tilt_data=tilt_data)
     else:
         LOGGER.debug('No tilt data')
